@@ -13,10 +13,13 @@ def main():
     cell2.has_right_wall = False
     cell2.draw()
 
-    cell2 = Cell(100, 100, 150, 150, win)
-    cell2.has_left_wall = False
-    cell2.draw()
+    cell3 = Cell(100, 100, 150, 150, win)
+    cell3.has_left_wall = False
+    cell3.draw()
 
+    cell1.draw_move(cell2)
+    cell2.draw_move(cell3)
+    cell3.draw_move(cell2, undo=True)
 
     win.wait_for_close()
 
