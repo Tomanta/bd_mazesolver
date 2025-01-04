@@ -19,26 +19,31 @@ class Maze():
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._win = win
-        self._cells = None
+        self._cells = []
         self._create_cells()
         pass
 
     def _create_cells(self):
-        self._cells = []
         for x in range(self._num_cols):
-            new_row = []
+            new_col = []
             for y in range(self._num_rows):
                 new_cell = Cell(self._win)
-                new_row.append(new_cell)
-            self._cells.append(new_row)
+                new_col.append(new_cell)
+            self._cells.append(new_col)
         
-        for i in range(len(self._cells)):
-            for j in range(len(self._cells)):
-                self._draw_cell(i, j)
+        for i in range(self._num_cols):
+            for j in range(self._num_rows):
+                try:
+                    self._draw_cell(i, j)
+                except:
+                    print(f"Error: {i} {j}")
+                    raise Exception("Error")
 
     def _draw_cell(self, i, j):
-        x1 = i * self._cell_size_x
-        y1 = j * self._cell_size_y
+        if self._win is None:
+            raise Exception("maze._draw_cell: Window not found")
+        x1 = self._x1 + i * self._cell_size_x
+        y1 = self._y1 + j * self._cell_size_y
         x2 = x1 + self._cell_size_x
         y2 = y1 + self._cell_size_y
         self._cells[i][j].draw(x1, y1, x2, y2)
