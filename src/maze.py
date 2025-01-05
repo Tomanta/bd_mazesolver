@@ -1,5 +1,6 @@
 from time import sleep
 from cell import Cell
+import random
 
 class Maze():
     def __init__(
@@ -10,7 +11,8 @@ class Maze():
             num_cols,
             cell_size_x,
             cell_size_y,
-            win = None
+            win = None,
+            seed = None
     ):
         self._x1 = x1
         self._y1 = y1
@@ -21,7 +23,10 @@ class Maze():
         self._win = win
         self._cells = []
         self._create_cells()
-        pass
+        self._break_entrance_and_exit()
+        self._break_walls_r(0,0)
+        if seed:
+            random.seed(seed)
 
     def _create_cells(self):
         for x in range(self._num_cols):
@@ -34,8 +39,6 @@ class Maze():
         for i in range(self._num_cols):
             for j in range(self._num_rows):
                 self._draw_cell(i, j)
-            
-        self._break_entrance_and_exit()
 
     def _draw_cell(self, i, j):
         if self._win is None:
@@ -47,6 +50,55 @@ class Maze():
         self._cells[i][j].draw(x1, y1, x2, y2)
         self._animate()
 
+    def _break_walls_r(self, i, j):
+        self._cells[i][j].visited = True
+        while True:
+            possible_directions = []
+
+            # determine which cell(s) to visit next
+            # left
+            if i > 0 and not self._cells[i - 1][j].visited:
+                possible_directions.append((i-1,j))
+            # right
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+                possible_directions.append((i+1,j))
+            # up
+            if j > 0 and not self._cells[i][j-1].visited:
+                possible_directions.append((i,j-1))
+            # down
+            if j < self._num_rows - 1 and not self._cells[i][j+1].visited:
+                possible_directions.append((i,j+1))
+
+            if len(possible_directions) == 0:
+                self._draw_cell(i,j)
+                return
+
+            # Pick a random direction
+            direction = random.randrange(0,len(possible_directions))
+            chosen_direction = possible_directions[direction]
+            
+            # Knock out the walls
+            # right
+            if chosen_direction[0] == i + 1:
+                self._cells[i][j].has_right_wall = False
+                self._cells[i+1][j].has_left_wall = False
+            # left
+            if chosen_direction[0] == i - 1:
+                self._cells[i][j].has_left_wall = False
+                self._cells[i-1][j].has_right_wall = False
+            # down
+            if chosen_direction[1] == j + 1:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[i][j+1].has_top_wall = False
+            # top
+            if chosen_direction[1] == j - 1:
+                self._cells[i][j].has_top_wall = False
+                self._cells[i][j-1].has_bottom_wall = False
+
+            self._break_walls_r(chosen_direction[0], chosen_direction[1])
+
+                    
+
     def _break_entrance_and_exit(self):
         self._cells[0][0].has_top_wall = False
         self._draw_cell(0, 0)
@@ -55,4 +107,4 @@ class Maze():
     
     def _animate(self):
         self._win.redraw()
-        sleep(0.05)
+        sleep(0.01)
