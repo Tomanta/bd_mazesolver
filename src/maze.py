@@ -25,6 +25,7 @@ class Maze():
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0,0)
+        self._reset_cells_visited()
         if seed:
             random.seed(seed)
 
@@ -49,6 +50,11 @@ class Maze():
         y2 = y1 + self._cell_size_y
         self._cells[i][j].draw(x1, y1, x2, y2)
         self._animate()
+
+    def _reset_cells_visited(self):
+        for x in range(self._num_cols):
+            for y in range(self._num_rows):
+                self._cells[x][y].visited = False
 
     def _break_walls_r(self, i, j):
         self._cells[i][j].visited = True

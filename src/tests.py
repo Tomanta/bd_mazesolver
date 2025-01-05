@@ -36,7 +36,13 @@ class Tests(unittest.TestCase):
         self.assertFalse(m1._cells[0][0].has_top_wall)
         self.assertFalse(m1._cells[4][4].has_bottom_wall)
         
-
+    def test_reset_visited_cells(self):
+        num_cols = 5
+        num_rows = 5
+        m1 = Maze(0, 0, num_rows, num_cols, 10, 10)
+        for x in range(num_cols):
+            for y in range(num_cols):
+                self.assertFalse(m1._cells[x][y].visited)
 
 if __name__ == "__main__":
     unittest.main()
