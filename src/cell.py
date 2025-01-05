@@ -52,7 +52,7 @@ class Cell():
     
     def draw_move(self, to_cell, undo=False):
         if undo:
-            fill_color = "gray"
+            fill_color = "white"
         else:
             fill_color = "red"
         
